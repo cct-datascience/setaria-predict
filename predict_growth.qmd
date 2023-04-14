@@ -1,0 +1,160 @@
+---
+title: "Predicting Setaria Growth"
+format: html
+editor: visual
+---
+
+## Purpose
+
+Predict is to predict Setaria growth for modified plant (e.g., anthocyanin) at new sites and times. Inputs that can be changed are parameter values and site-level environmental variables.
+
+```{r}
+#| label: setup
+library(PEcAn.settings)
+library(tidyverse)
+library(daymetr)
+library(tidymodels)
+library(fs)
+library(janitor)
+```
+
+## Data
+
+Combine ED2 output variables from ensemble runs with parameter values and environmental data by month for all sites with ED2 results.
+
+Steps:
+
+1.  Get cumulative monthly NPP by ensemble and site
+2.  Get parameter values for each ensemble run (from ensemble.samples .Rdata file; same across years)
+3.  Get monthly environmental values for each site and year (lookup from MERRA or another gridded resource)
+
+## Get ED2 ensemble data
+
+```{r}
+outdirs <-  
+  dir_ls("/data/output/pecan_runs/transect/") |>
+  dir_ls(regexp = "mixed$|pine|prairie")
+ens_dirs <-   
+  outdirs|> 
+  path("out") |> 
+  dir_ls(regexp = "ENS-")
+ens_results_raw <- 
+  ens_dirs |> 
+  dir_ls(regexp = "run_data.csv") |> 
+  read_csv()
+```
+
+Extract ensemble number as numeric for joining later.
+
+```{r}
+ens_results <-
+  ens_results_raw |> 
+  mutate(
+    ens_num = str_extract(ensemble, "(?<=ENS-)\\d+(?=-)") |> 
+      parse_number()
+  ) |> 
+  group_by(site, ecosystem) |>
+  mutate(start = min(date), end = max(date)) |> 
+  ungroup()
+```
+
+## Get param values
+
+```{r}
+params <- 
+  outdirs |> 
+  dir_ls(regexp = "ensemble.samples.NOENSEMBLEID.Rdata") |> 
+  map(\(x) {
+    load(x)
+    ens.samples$SetariaWT2 |>
+      as_tibble(rownames = "ens_num") |>
+      mutate(ens_num = as.numeric(ens_num))
+  }) |> 
+  list_rbind(names_to = "path") |> 
+  mutate(
+    ecosystem = path_split(path) |> map_chr(-2),
+    site = path_split(path) |> map_chr(-3)
+  ) |> 
+  select(-path) |> 
+  select(site, ecosystem, everything())
+```
+
+## Combine
+
+```{r}
+ens_params <- 
+  left_join(ens_results, params, by = join_by(ecosystem, site, ens_num))
+```
+
+## Get Environmental Data
+
+Could just use the actual MET data used for simulations, but for predicting in other sites, it will be easier to use a gridded data product.
+
+```{r}
+mets_mean_monthly <- 
+  ens_params |>
+  group_by(site) |> 
+  slice_head(n = 1) |> 
+  pmap(\(site, lat, lon, start, end, ...) {
+      out <- 
+        download_daymet(
+          site  = site,
+          lat   = lat,
+          lon   = lon,
+          start = year(start),
+          end   = year(end)
+        )
+      out$data |>
+        mutate(
+          date = make_date(year = year, month = 1, day = 1) + days(yday - 1),
+          month = month(date)
+        ) |> 
+        clean_names() |> 
+        mutate(tavg_deg_c = (tmin_deg_c + tmax_deg_c) / 2,
+               dayl_day = dayl_s / 86400) |> 
+        group_by(year, month) |> 
+        summarize(across(c(
+          temp = tavg_deg_c,
+          vpd = vp_pa,
+          precip = prcp_mm_day,
+          srad = srad_w_m_2,
+          swe = swe_kg_m_2,
+          dayl = dayl_day
+        ),
+        .fns = c(mean = ~mean(., na.rm = TRUE)), 
+        .names = "{.fn}_{.col}")) |> 
+        mutate(site = out$site) |> 
+        #reconstitute date
+        mutate(date = make_date(year = year, month = month, day = 1)) |> 
+        select(-year, -month)
+  }) |>
+  list_rbind()
+  
+```
+
+Join em
+
+```{r}
+ens_params_env <- 
+  left_join(ens_params, mets_mean_monthly, join_by(site, date)) |> 
+  # Keep just data for setaria (pft 1)
+  filter(pft == 1) |> 
+  select(
+    site, lat, lon, ecosystem, ensemble, date, #metadata
+    AGB_PFT, NPP_PFT, #response vars
+    # Traits
+    leaf_turnover_rate,
+    nonlocal_dispersal,
+    fineroot2leaf,
+    root_turnover_rate,
+    seedling_mortality,
+    stomatal_slope,
+    quantum_efficiency,
+    Vcmax,
+    r_fract,
+    cuticular_cond,
+    SLA,
+    # Weather
+    starts_with("mean_")
+  )
+```
