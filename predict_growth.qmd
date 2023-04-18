@@ -158,3 +158,30 @@ ens_params_env <-
     starts_with("mean_")
   )
 ```
+
+## Modeling
+
+These are timeseries, so can't treat every observation as independent. Need to deal with that in some way.
+
+1.  Use just the last year or last month of data from the simulation (final NPP) and rather than using timeseries of weather data, use something like climate normals for the sites from BioClim.
+2.  Model the timeseries, somehow. NPP \~ weather + constant co-variates of plant traits.
+3.  Forget weather entirely and just use site as a random effect and do something simple
+
+```{r}
+
+```
+
+Final NPP should be effected by: ecosystem type, location (lat, lon) OR the climate of the location, and plant parameters.
+
+### Random forest
+
+Split dataset
+
+```{r}
+set.seed(12678)
+ens_params_env |> count(site, year(date))
+
+t <- ens_params_env |> 
+  # take only last year
+  filter(year(date) == 2010)
+```
