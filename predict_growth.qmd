@@ -28,7 +28,7 @@ Steps:
 2.  Get parameter values for each ensemble run (from ensemble.samples .Rdata file; same across years)
 3.  Get monthly environmental values for each site and year (lookup from MERRA or another gridded resource)
 
-## Get ED2 ensemble data
+### Get ED2 ensemble data
 
 ```{r}
 outdirs <-  
@@ -58,7 +58,7 @@ ens_results <-
   ungroup()
 ```
 
-## Get param values
+### Get param values
 
 ```{r}
 params <- 
@@ -79,14 +79,14 @@ params <-
   select(site, ecosystem, everything())
 ```
 
-## Combine
+### Combine
 
 ```{r}
 ens_params <- 
   left_join(ens_results, params, by = join_by(ecosystem, site, ens_num))
 ```
 
-## Get Environmental Data
+### Get Environmental Data
 
 Could just use the actual MET data used for simulations, but for predicting in other sites, it will be easier to use a gridded data product.
 
