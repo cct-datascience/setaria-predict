@@ -6,5 +6,6 @@ wrangle_data <- function(ens_complete) {
     group_by(site, ecosystem, ensemble, year) |> 
     select(-date) |> 
     summarize(across(everything(),  mean),  .groups = "drop") |> 
-    rename(npp_summer = NPP_PFT)
+    rename(npp_summer = NPP_PFT) |> 
+    mutate(ens_unique = paste(ensemble, ecosystem, sep = "_"))
 }

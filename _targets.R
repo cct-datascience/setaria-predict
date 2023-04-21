@@ -10,13 +10,10 @@ library(tarchetypes)
 # Set target options:
 tar_option_set(
   # packages that your targets need to run
-  packages = c("tidyverse", "fs", "janitor", "daymetr", "tidymodels", "ranger"),
+  packages = c("tidyverse", "fs", "janitor", "daymetr", "tidymodels", "ranger", "multilevelmod"),
   format = "rds" # default storage format
   # Set other options as needed.
 )
-
-# tar_make_clustermq() configuration (okay to leave alone):
-options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
@@ -42,41 +39,67 @@ tar_plan(
   
   # Model -------------------------------------------------------------------
   #split into training and testing set
-  tar_target(ens_split, initial_split(model_data, prop = 0.8)),
+  tar_target(
+    ens_split,
+    group_initial_split(
+      model_data,
+      group = ens_unique, #keep ensembles together in test and training
+      prop = 0.8, #80/20 split
+      # strata = npp_summer #stratify by NPP which is right-skewed
+    )
+  ),
   tar_target(ens_train, training(ens_split)),
   tar_target(ens_test, testing(ens_split)),
   tar_target(
-    ens_model,
+    rf_model,
     rand_forest(
       trees = tune(),
       mtry = tune()
     ) |> set_engine("ranger") |> set_mode("regression")
   ),
+  tar_target(
+    lmer_model,
+    linear_reg() |> set_engine("lmer") |> set_mode("regression")
+  ),
   tar_target(ens_recipe, define_recipe(ens_train)),
   tar_target(
-    ens_workflow,
-    workflow() |> add_recipe(ens_recipe) |> add_model(ens_model)
+    rf_workflow,
+    workflow() |> 
+      add_recipe(ens_recipe) |>
+      add_model(rf_model, formula = npp_summer ~ .)
   ),
   tar_target(
-    ens_grid,
+    lmer_workflow,
+    workflow() |> 
+      add_recipe(ens_recipe) |>
+      add_model(lmer_model, formula = npp_summer ~ . + (1|ens_unique))
+  ),
+  tar_target(
+    lmer_fit,
+    lmer_workflow |> fit(ens_train)
+  ),
+  tar_target(
+    rf_grid,
     expand_grid(mtry = 3:5, trees = seq(500, 1500, by = 200))
   ),
   tar_target(
-    ens_grid_results,
-    ens_workflow |> tune_grid(resamples = vfold_cv(ens_train, v = 5), grid = ens_grid)
+    rf_grid_results,
+    rf_workflow |> tune_grid(resamples = vfold_cv(ens_train, v = 5), grid = rf_grid)
   ),
   tar_target(
     hyperparameters,
-    select_by_pct_loss(ens_grid_results, metric = "rmse", limit = 5, trees)
+    select_by_pct_loss(rf_grid_results, metric = "rmse", limit = 5, trees)
   ),
   tar_target(
-    fitted_model,
-    ens_workflow |> finalize_workflow(hyperparameters) |> fit(ens_train)
+    rf_fit,
+    rf_workflow |> finalize_workflow(hyperparameters) |> fit(ens_train)
   ),
-  tar_target(
-    metrics,
-    fitted_model %>%
-      predict(ens_test) %>%
-      metric_set(rmse, mae, rsq, ccc)(ens_test$npp_summer, .pred)
-  )
-)
+  ## I don't think this is the correct way to do this
+  # tar_target(
+  #   metrics,
+  #   rf_fit %>%
+  #     predict(ens_test) %>%
+  #     metric_set(rmse, mae, rsq, ccc)(ens_test$npp_summer, .pred)
+  # )
+) |> 
+  tarchetypes::tar_hook_before(tidymodels_prefer())
