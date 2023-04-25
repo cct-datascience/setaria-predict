@@ -1,9 +1,10 @@
-get_data_paths <- function(paths, genotype = c("antho", "dwarf", "hotleaf")) {
+get_data_paths <- function(paths, genotype = c("wildtype", "antho", "dwarf", "hotleaf")) {
   genotype <- match.arg(genotype)
   
   run_regex <- 
     switch(
       genotype,
+      "wildtype" = "SA-median$",
       "antho" = "SA-SetariaWT2-quantum_efficiency-0.159$",
       "dwarf" = "SA-SetariaWT2-fineroot2leaf-0.841$",
       "hotleaf" = "SA-SetariaWT2-stomatal_slope-0.159$"
