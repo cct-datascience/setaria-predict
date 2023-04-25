@@ -1,7 +1,5 @@
-get_daymet_monthly <- function(ens_data) {
-  ens_data |>
-    group_by(site) |> 
-    slice_head(n = 1) |> 
+get_daymet_monthly <- function(site_data) {
+  site_data |>
     pmap(\(site, lat, lon, start, end, ...) {
       out <- 
         download_daymet(
