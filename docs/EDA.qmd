@@ -1,0 +1,51 @@
+---
+title: "Exploratory Data Analysis"
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+library(skimr)
+library(targets)
+library(tidyverse)
+tar_load(model_data)
+
+```
+
+Look at distribution of response variable (summer NPP)
+
+```{r}
+ggplot(model_data, aes(npp_summer)) +
+  geom_histogram() +
+  facet_wrap(~ecosystem)
+```
+
+-   Are negative values meaningful? (sounds like the answer is "it depends" [@roxburgh2005].
+
+-   If not, should they be converted to zeros?
+
+-   If they can be converted to zeros, should data be log-transformed (or modeled with a log-link)?
+
+```{r}
+colnames(model_data)
+skim(model_data)
+```
+
+-   `mean_swe` is invariant at 0 and should be removed
+
+-   `year` should probably be treated as categorical
+
+```{r}
+ggplot(model_data, aes(year, npp_summer)) +
+  geom_point() +
+  facet_grid(~ecosystem)
+```
+
+```{r}
+ggplot(model_data, aes(mean_srad, mean_dayl)) + geom_point()
+cor.test(model_data$mean_dayl, model_data$mean_srad)
+```
+
+Mean solar radiation is correlated with mean day length, but they might contain slightly different information. BioClim variables might be better.

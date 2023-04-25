@@ -28,7 +28,7 @@ Steps:
 2.  Get parameter values for each ensemble run (from ensemble.samples .Rdata file; same across years)
 3.  Get monthly environmental values for each site and year (lookup from MERRA or another gridded resource)
 
-## Get ED2 ensemble data
+### Get ED2 ensemble data
 
 ```{r}
 outdirs <-  
@@ -58,7 +58,7 @@ ens_results <-
   ungroup()
 ```
 
-## Get param values
+### Get param values
 
 ```{r}
 params <- 
@@ -79,14 +79,14 @@ params <-
   select(site, ecosystem, everything())
 ```
 
-## Combine
+### Combine
 
 ```{r}
 ens_params <- 
   left_join(ens_results, params, by = join_by(ecosystem, site, ens_num))
 ```
 
-## Get Environmental Data
+### Get Environmental Data
 
 Could just use the actual MET data used for simulations, but for predicting in other sites, it will be easier to use a gridded data product.
 
@@ -157,4 +157,31 @@ ens_params_env <-
     # Weather
     starts_with("mean_")
   )
+```
+
+## Modeling
+
+These are timeseries, so can't treat every observation as independent. Need to deal with that in some way.
+
+1.  Use just the last year or last month of data from the simulation (final NPP) and rather than using timeseries of weather data, use something like climate normals for the sites from BioClim.
+2.  Model the timeseries, somehow. NPP \~ weather + constant co-variates of plant traits.
+3.  Forget weather entirely and just use site as a random effect and do something simple
+
+```{r}
+
+```
+
+Final NPP should be effected by: ecosystem type, location (lat, lon) OR the climate of the location, and plant parameters.
+
+### Random forest
+
+Split dataset
+
+```{r}
+set.seed(12678)
+ens_params_env |> count(site, year(date))
+
+t <- ens_params_env |> 
+  # take only last year
+  filter(year(date) == 2010)
 ```
