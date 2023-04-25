@@ -40,30 +40,33 @@ tar_plan(
   tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(genotype = "hotleaf")),
   tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(genotype = "dwarf")),
   tar_target(antho_data, collect_data(antho_files) |> mutate(genotype = "antho")),
+  
+  # Get weather data
   tar_target(site_data, make_site_data(hotleaf_data, dwarf_data, antho_data)),
   tar_target(daymet_monthly, get_daymet_monthly(site_data)),
   
-  # for starters, just use one genotype.
+  # for starters, just use one genotype for modeling as a test.  Eventually use
+  # static branching with tar_map() to do all this better
   
-  # 
-  # #currently this is monthly timeseries data, but that's probably not
-  # #appropriate for the kind of predictive model we want to build
-  # tar_target(ens_complete, combine_data(ens_output, ens_params, daymet_monthly)),
-  # tar_target(model_data, wrangle_data(ens_complete)),
-  # 
-  # # Model -------------------------------------------------------------------
-  # #split into training and testing set
-  # tar_target(
-  #   ens_split,
-  #   group_initial_split(
-  #     model_data,
-  #     group = ens_unique, #keep ensembles together in test and training
-  #     prop = 0.8, #80/20 split
-  #     # strata = npp_summer #stratify by NPP which is right-skewed
-  #   )
-  # ),
-  # tar_target(ens_train, training(ens_split)),
-  # tar_target(ens_test, testing(ens_split)),
+  # currently this is monthly timeseries data, which might not be appropriate
+  # for random forest modeling without an autoregressive term.  Might be able to
+  # add autoregression with recipes?
+  tar_target(wildtype_full, combine_wrangle(wildtype_data, daymet_monthly)),
+  
+
+  # Model -------------------------------------------------------------------
+  #split into training and testing set
+  tar_target(
+    wildtype_split,
+    group_initial_split(
+      wildtype_full,
+      group = run_id, #keep timeseries together in test and training
+      prop = 0.8, #80/20 split
+      # strata = npp_summer #stratify by NPP which is right-skewed
+    )
+  ),
+  tar_target(wildtype_train, training(wildtype_split)),
+  tar_target(wildtype_test,  testing(wildtype_split)),
   # tar_target(
   #   rf_model,
   #   rand_forest(

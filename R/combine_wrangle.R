@@ -18,5 +18,6 @@ combine_wrangle <- function(genotype_data, daymet_monthly) {
       NPP_PFT, 
       # Weather
       starts_with("mean_")
-    )
+    ) |> 
+    mutate(run_id = paste(site, ecosystem, sep = "_"))
 }
