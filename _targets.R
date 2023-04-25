@@ -20,7 +20,10 @@ tar_source()
 
 tar_plan(
   # Data prep ---------------------------------------------------------------
-  # tar_target(genotypes, c("antho", "dwarf", "hotleaf")),
+  tar_files(
+    wildtype_files,
+    get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "wildtype")
+  ),
   tar_files(
     hotleaf_files,
     get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "hotleaf")
@@ -33,11 +36,15 @@ tar_plan(
     antho_files,
     get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "antho")
   ),
+  tar_target(wildtype_data, collect_data(wildtype_files) |> mutate(genotype = "wildtype")),
   tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(genotype = "hotleaf")),
   tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(genotype = "dwarf")),
   tar_target(antho_data, collect_data(antho_files) |> mutate(genotype = "antho")),
   tar_target(site_data, make_site_data(hotleaf_data, dwarf_data, antho_data)),
   tar_target(daymet_monthly, get_daymet_monthly(site_data)),
+  
+  # for starters, just use one genotype.
+  
   # 
   # #currently this is monthly timeseries data, but that's probably not
   # #appropriate for the kind of predictive model we want to build
