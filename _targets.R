@@ -10,7 +10,7 @@ library(tarchetypes)
 # Set target options:
 tar_option_set(
   # packages that your targets need to run
-  packages = c("tidyverse", "fs", "janitor", "daymetr", "tidymodels", "ranger", "multilevelmod"),
+  packages = c("tidyverse", "fs", "janitor", "daymetr", "tidymodels", "ranger", "multilevelmod", "dismo"),
   format = "rds" # default storage format
   # Set other options as needed.
 )
@@ -44,6 +44,7 @@ tar_plan(
   # Get weather data
   tar_target(site_data, make_site_data(hotleaf_data, dwarf_data, antho_data)),
   tar_target(daymet_monthly, get_daymet_monthly(site_data)),
+  tar_target(bioclim, calc_bioclim(daymet_monthly)),
   
   # for starters, just use one genotype for modeling as a test.  Eventually use
   # static branching with tar_map() to do all this better
