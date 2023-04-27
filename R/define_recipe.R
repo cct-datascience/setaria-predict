@@ -9,3 +9,8 @@ define_recipe <- function(data_train) {
     step_normalize(all_numeric_predictors()) |> 
     prep(training = data_train, retain = TRUE) #not 100% sure what this does
 }
+
+#' TODO: 
+#' - Consider step_pca() for bioclim variables since they are likely collinear
+#'   and possibly redundant.  Look to literature to see how others use bioclim.
+#' - Add means of mean_vpd and mean_srad as predictors
