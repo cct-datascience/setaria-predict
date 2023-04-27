@@ -10,7 +10,16 @@ set.seed(34234)
 # Set target options:
 tar_option_set(
   # packages that your targets need to run
-  packages = c("tidyverse", "fs", "janitor", "daymetr", "tidymodels", "ranger", "multilevelmod", "dismo"),
+  packages = c(
+    "tidyverse",
+    "fs",
+    "janitor",
+    "daymetr",
+    "tidymodels",
+    "ranger",
+    "multilevelmod",
+    "dismo"
+  ),
   format = "rds" # default storage format
   # Set other options as needed.
 )
@@ -40,31 +49,31 @@ tar_plan(
   tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(genotype = "hotleaf")),
   tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(genotype = "dwarf")),
   tar_target(antho_data, collect_data(antho_files) |> mutate(genotype = "antho")),
+  tar_target(setaria_data, bind_rows(wildtype_data, hotleaf_data, dwarf_data, antho_data)),
   
   # Get weather data
-  tar_target(site_data, make_site_data(hotleaf_data, dwarf_data, antho_data)),
+  tar_target(site_data, make_site_data(setaria_data)),
   tar_target(daymet_monthly, get_daymet_monthly(site_data)),
   tar_target(bioclim, calc_bioclim(daymet_monthly)),
+  tar_target(model_data, create_model_data(setaria_data, bioclim)), #TODO: consider including mean daylight or latitude 
   
-  # for starters, just use one genotype for modeling as a test.  Eventually use
-  # static branching with tar_map() to do all this better
-  tar_target(wildtype_model_data, create_model_data(wildtype_data, bioclim)),
-  
-
-  # Model -------------------------------------------------------------------
   #split into training and testing set
   tar_target(
-    wildtype_split,
+    data_split,
     initial_split(
-      wildtype_model_data,
+      model_data,
       prop = 0.8, #80/20 split
       strata = npp_yr10 #stratify by NPP which is right-skewed
     )
   ),
-  tar_target(wildtype_train, training(wildtype_split)),
-  tar_target(wildtype_test,  testing(wildtype_split)),
+  tar_target(data_train, training(data_split)),
+  tar_target(data_test,   testing(data_split)),
+  
+  # Model -------------------------------------------------------------------
+  # TODO: add some kind of penalized linear regression model to compete with RF
+  
   # Set up recipe for pre-processing
-  tar_target(rf_recipe, define_recipe(wildtype_train)), #should be applicable to other "genotypes" also
+  tar_target(rf_recipe, define_recipe(data_train)), 
   
   tar_target(
     rf_model,
@@ -88,7 +97,7 @@ tar_plan(
   tar_target(
     rf_grid_results,
     rf_workflow |> 
-      tune_grid(resamples = vfold_cv(wildtype_train, v = 5), grid = rf_grid)
+      tune_grid(resamples = vfold_cv(data_train, v = 5), grid = rf_grid)
   ),
   #there is a simpler way to do this in the most recent version of tidymodels
   tar_target(
@@ -99,17 +108,28 @@ tar_plan(
     rf_fit,
     rf_workflow |> 
       finalize_workflow(hyperparameters) |>
-      fit(data = wildtype_train)
+      fit(data = data_train)
   ),
   
-  # TODO: evaluate model!
-  
-  # ## I don't think this is the correct way to do this
-  # # tar_target(
-  # #   metrics,
-  # #   rf_fit %>%
-  # #     predict(ens_test) %>%
-  # #     metric_set(rmse, mae, rsq, ccc)(ens_test$npp_summer, .pred)
-  # # )
+
+# Evaluate models ---------------------------------------------------------
+  tar_target(
+    rf_pred_plot,
+    augment(rf_fit, data_test) |> 
+      ggplot(aes(x = log(npp_yr10), y = .pred, color = genotype)) +
+      geom_point() + 
+      geom_abline(alpha = 0.3, linetype = 2) +
+      facet_wrap(~ecosystem, labeller = label_both) +
+      theme_bw() +
+      labs(x = "observed log(NPP)", y = "predicted log(NPP)")
+  ),
+
+
+# Gridded predictions -----------------------------------------------------
+
+# Generate a grid of points
+# Get weather data for those points, calculate bioclim, etc.
+# Predict on those points
+# Make maps
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
