@@ -14,3 +14,4 @@ define_recipe <- function(data_train) {
 #' - Consider step_pca() for bioclim variables since they are likely collinear
 #'   and possibly redundant.  Look to literature to see how others use bioclim.
 #' - Add means of mean_vpd and mean_srad as predictors
+#' - Consider an interaction between genotype and ecosystem as a predictor
