@@ -68,6 +68,7 @@ tar_plan(
   ),
   tar_target(data_train, training(data_split)),
   tar_target(data_test,   testing(data_split)),
+  tar_target(data_folds, vfold_cv(data_train, v = 10)),
   
   # Model -------------------------------------------------------------------
   # TODO: add some kind of penalized linear regression model to compete with RF
@@ -123,6 +124,14 @@ tar_plan(
       theme_bw() +
       labs(x = "observed log(NPP)", y = "predicted log(NPP)")
   ),
+  #do 10-fold cross-validation
+  tar_target(
+    rf_fit_rs,
+    rf_workflow |> 
+      finalize_workflow(hyperparameters) |> 
+      fit_resamples(data_folds) |> 
+      collect_metrics()
+  )
 
 
 # Gridded predictions -----------------------------------------------------
