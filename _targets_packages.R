@@ -2,6 +2,7 @@
 library(bs4Dash)
 library(clustermq)
 library(daymetr)
+library(dismo)
 library(fs)
 library(future)
 library(gt)
