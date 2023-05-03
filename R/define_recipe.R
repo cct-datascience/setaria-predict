@@ -15,3 +15,4 @@ define_recipe <- function(data_train) {
 #' TODO: 
 #' - Consider step_pca() for bioclim variables since they are likely collinear
 #'   and possibly redundant.  Look to literature to see how others use bioclim.
+#' - You can `tune()` the `threshold` argument in `step_pca()` (or `num_comp`)

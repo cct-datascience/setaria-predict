@@ -18,7 +18,8 @@ tar_option_set(
     "tidymodels",
     "ranger",
     "multilevelmod",
-    "dismo"
+    "dismo",
+    "glmnet"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -76,6 +77,8 @@ tar_plan(
   # Set up recipe for pre-processing
   tar_target(rf_recipe, define_recipe(data_train)), 
   
+  
+  ## Random forest ----------------------------------------------------------
   tar_target(
     rf_model,
     rand_forest(
@@ -102,18 +105,53 @@ tar_plan(
   ),
   #there is a simpler way to do this in the most recent version of tidymodels
   tar_target(
-    hyperparameters,
+    rf_hyperparameters,
     select_by_pct_loss(rf_grid_results, metric = "rmse", limit = 5, trees)
   ),
   tar_target(
     rf_fit,
     rf_workflow |> 
-      finalize_workflow(hyperparameters) |>
+      finalize_workflow(rf_hyperparameters) |>
       fit(data = data_train)
   ),
   
-
-# Evaluate models ---------------------------------------------------------
+  ## Linear regression ------------------------------------------------------
+  
+  tar_target(
+    lm_model,
+    linear_reg(
+      penalty = tune(), #full coefficient path is used regardless of what is set here
+      mixture = tune()
+    ) |> 
+      set_engine("glmnet") #penalized regression
+  ),
+  tar_target(
+    lm_workflow,
+    workflow() |>
+      add_recipe(rf_recipe) |> #re-use recipe
+      add_model(lm_model)
+  ),
+  tar_target(
+    lm_grid,
+    tibble(penalty = 1, mixture = seq(0, 1, by = 0.1))
+  ),
+  tar_target(
+    lm_grid_results,
+    lm_workflow |> 
+      tune_grid(resamples = vfold_cv(data_train, v = 5), grid = lm_grid)
+  ),
+  tar_target(
+    lm_hyperparameters,
+    select_by_pct_loss(lm_grid_results, metric = "rmse", mixture)
+  ),
+  tar_target(
+    lm_fit,
+    lm_workflow |> 
+      finalize_workflow(lm_hyperparameters) |>
+      fit(data = data_train)
+  ),
+  
+  # Evaluate models ---------------------------------------------------------
   tar_target(
     rf_pred_plot,
     augment(rf_fit, data_test) |> 
@@ -128,12 +166,29 @@ tar_plan(
   tar_target(
     rf_fit_rs,
     rf_workflow |> 
-      finalize_workflow(hyperparameters) |> 
+      finalize_workflow(rf_hyperparameters) |> 
       fit_resamples(data_folds) |> 
       collect_metrics()
-  )
-
-
+  ),
+  tar_target(
+    lm_pred_plot,
+    augment(lm_fit, data_test) |> 
+      ggplot(aes(x = log(npp_yr10), y = .pred, color = genotype)) +
+      geom_point() + 
+      geom_abline(alpha = 0.3, linetype = 2) +
+      facet_wrap(~ecosystem, labeller = label_both) +
+      theme_bw() +
+      labs(x = "observed log(NPP)", y = "predicted log(NPP)")
+  ),
+  tar_target(
+    lm_fit_rs,
+    lm_workflow |> 
+      finalize_workflow(lm_hyperparameters) |> 
+      fit_resamples(data_folds) |> 
+      collect_metrics(summarize = FALSE)
+  ),
+  
+  
 # Gridded predictions -----------------------------------------------------
 
 # Generate a grid of points
