@@ -19,7 +19,11 @@ tar_option_set(
     "ranger",
     "multilevelmod",
     "dismo",
-    "glmnet"
+    "glmnet",
+    "sf",
+    "terra",
+    "stars",
+    "units"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -185,15 +189,51 @@ tar_plan(
     lm_workflow |> 
       finalize_workflow(lm_hyperparameters) |> 
       fit_resamples(data_folds) |> 
-      collect_metrics(summarize = FALSE)
+      collect_metrics()
   ),
   
   
-# Gridded predictions -----------------------------------------------------
-
-# Generate a grid of points
-# Get weather data for those points, calculate bioclim, etc.
-# Predict on those points
-# Make maps
+  # Gridded predictions -----------------------------------------------------
+  # Generate a grid of points
+  tar_target(
+    seus,
+    get_seus_shape()
+  ),
+  tar_target(
+    grid_data,
+    make_grid_data(seus)
+  ),
+  # Get weather data for those points
+  tar_target(
+    grid_daymet,
+    get_daymet_monthly(grid_data) 
+  ),
+  # Calculate bioclim
+  tar_target(
+    grid_bioclim,
+    calc_bioclim(grid_daymet)
+  ),
+  # Create genotype and ecosystem combinations and wrangle data
+  tar_target(
+    newdata,
+      expand_grid(
+        genotype = c("antho", "dwarf", "hotleaf", "wildtype"),
+        ecosystem = c("mixed", "pine", "prairie"),
+        grid_bioclim
+      )
+  ),
+  # Predict on those points and wrangle
+  tar_target(
+    grid_pred,
+    left_join(
+      augment(rf_fit, new_data = newdata),
+      grid_data |> dplyr::select(-start, -end)
+    )
+  ),
+  # Make map
+  tar_target(
+    pred_map,
+    make_pred_map(grid_pred, seus)
+  )
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
