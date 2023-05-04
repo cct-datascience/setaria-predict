@@ -18,7 +18,7 @@ create_model_data <- function(data, bioclim) {
   response <- data|> 
     filter(year(date) == max(year(date)) & month(date) %in% c(6,7,8)) |> 
     group_by(genotype, site, ecosystem) |> 
-    summarize(npp_yr10 = mean(NPP_PFT), .groups = "drop")
+    summarize(log_npp_yr10 = mean(log(NPP_PFT)), .groups = "drop")
   
   left_join(response, bioclim, join_by(site))
 }

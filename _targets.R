@@ -67,8 +67,7 @@ tar_plan(
     data_split,
     initial_split(
       model_data,
-      prop = 0.8, #80/20 split
-      strata = npp_yr10 #stratify by NPP which is right-skewed
+      prop = 0.8 #80/20 split
     )
   ),
   tar_target(data_train, training(data_split)),
@@ -159,7 +158,7 @@ tar_plan(
   tar_target(
     rf_pred_plot,
     augment(rf_fit, data_test) |> 
-      ggplot(aes(x = log(npp_yr10), y = .pred, color = genotype)) +
+      ggplot(aes(x = log_npp_yr10, y = .pred, color = genotype)) +
       geom_point() + 
       geom_abline(alpha = 0.3, linetype = 2) +
       facet_wrap(~ecosystem, labeller = label_both) +
@@ -177,7 +176,7 @@ tar_plan(
   tar_target(
     lm_pred_plot,
     augment(lm_fit, data_test) |> 
-      ggplot(aes(x = log(npp_yr10), y = .pred, color = genotype)) +
+      ggplot(aes(x = log_npp_yr10, y = .pred, color = genotype)) +
       geom_point() + 
       geom_abline(alpha = 0.3, linetype = 2) +
       facet_wrap(~ecosystem, labeller = label_both) +
