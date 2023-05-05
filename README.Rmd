@@ -1,0 +1,42 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# setaria-predict
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of setaria-predict is to train a model using simulation output from ED2 to create an ED2 "emulator" of sorts.  Then, we can use this model to predict the growth of *Setaria* at new locations.
+
+We will use runs from the sensitivity analysis as stand-ins for different *Setaria* genotypes and train models using site location and/or weather data as predictors, then predict aboveground biomass or NPP of *Setaria* at new sites.
+
+## Reproducibility
+
+This project uses [`renv`](https://rstudio.github.io/renv/articles/renv.html) for package management. When opening this repo as an RStudio Project for the first time, `renv` should automatically install itself and prompt you to run `renv::restore()` to install all package dependencies.
+
+This project uses the [`targets` package](https://docs.ropensci.org/targets/) for workflow management. Run `targets::tar_make()` from the console to run the workflow and reproduce all results.
+
+The data for this project is on the Welsch server, so you probably won't be able to reproduce this workflow outside of that environment.
+
+**Targets workflow:**
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+cat(
+  "```mermaid",
+  targets::tar_mermaid(targets_only = FALSE),
+  "```",
+  sep = "\n"
+)
+#this should display correctly on GitHub, or code can be pasted into https://mermaid.live
+```

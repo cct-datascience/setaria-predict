@@ -233,6 +233,7 @@ tar_plan(
   tar_target(
     pred_map,
     make_pred_map(grid_pred, seus)
-  )
+  ),
+  tar_render(readme, "README.Rmd"),
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
