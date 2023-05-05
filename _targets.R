@@ -167,7 +167,7 @@ tar_plan(
   ),
   #do 10-fold cross-validation
   tar_target(
-    rf_fit_rs,
+    rf_cv,
     rf_workflow |> 
       finalize_workflow(rf_hyperparameters) |> 
       fit_resamples(data_folds) |> 
@@ -184,7 +184,7 @@ tar_plan(
       labs(x = "observed log(NPP)", y = "predicted log(NPP)")
   ),
   tar_target(
-    lm_fit_rs,
+    lm_cv,
     lm_workflow |> 
       finalize_workflow(lm_hyperparameters) |> 
       fit_resamples(data_folds) |> 
@@ -234,6 +234,5 @@ tar_plan(
     pred_map,
     make_pred_map(grid_pred, seus)
   ),
-  tar_render(readme, "README.Rmd"),
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
