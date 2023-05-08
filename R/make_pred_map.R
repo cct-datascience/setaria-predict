@@ -75,6 +75,8 @@ make_pred_map_log <- function(grid_pred, seus) {
 #' NPP compared to wildtype [i.e. (genotype - wildtype) / wildtype].
 make_pred_map_diff <- function(grid_pred, seus) {
   
+  usa <- st_as_sf(maps::map("usa", plot = FALSE, fill = TRUE))
+  
   prop_diff_sf <-
     grid_pred |> 
     dplyr::select(genotype, ecosystem, lat, lon, .pred) |> 
@@ -86,6 +88,7 @@ make_pred_map_diff <- function(grid_pred, seus) {
     st_as_stars(coords = c("lon", "lat"), dims = c("lon", "lat", "ecosystem", "genotype"))
   
   ggplot() +
+    geom_sf(data = usa, fill = "antiquewhite1") +
     geom_stars(
       data = prop_diff_sf,
       mapping = aes(fill = prop_diff),
@@ -93,7 +96,7 @@ make_pred_map_diff <- function(grid_pred, seus) {
     ) +
     geom_sf(data = seus, fill = NA) +
     facet_grid(genotype ~ ecosystem, labeller = label_both) +
-    coord_sf() +
+    coord_sf(xlim = st_bbox(seus)[c(1,3)], ylim = st_bbox(seus)[c(2, 4)]) +
     colorspace::scale_fill_continuous_diverging(
       palette = "Blue-Red",
       labels = scales::percent_format(),
@@ -103,17 +106,19 @@ make_pred_map_diff <- function(grid_pred, seus) {
     scale_x_continuous(breaks = c(-75, -80, -85, -90)) +
     guides(
       fill = guide_colorbar(
-        title = "% Difference in mean summer NPP compared to wildtype",
+        title = "% Difference summer NPP",
         title.position = "top",
         barwidth = unit(10, "cm"),
       )
     ) +
     theme_bw() +
     theme(
-      legend.position = "top",
+      legend.position = "bottom",
       legend.justification = "center",
       axis.title = element_blank(),
-      panel.background = element_rect(fill = "azure")
+      panel.grid.major = element_line(color = "grey50", linetype = "dashed", linewidth = 0.2),
+      panel.background = element_rect(fill = "aliceblue")
     )
   
 }
+
