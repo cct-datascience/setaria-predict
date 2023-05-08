@@ -24,7 +24,8 @@ tar_option_set(
     "terra",
     "stars",
     "units",
-    "ragg"
+    "ragg",
+    "colorspace"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -235,5 +236,13 @@ tar_plan(
     pred_map,
     make_pred_map(grid_pred, seus)
   ),
+  tar_target(
+   pred_map_log,
+   make_pred_map_log(grid_pred, seus)
+  ),
+  tar_target(
+    pred_map_diff,
+    make_pred_map_diff(grid_pred, seus)
+  )
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
