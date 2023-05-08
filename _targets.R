@@ -23,7 +23,8 @@ tar_option_set(
     "sf",
     "terra",
     "stars",
-    "units"
+    "units",
+    "ragg"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
