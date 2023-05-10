@@ -8,7 +8,7 @@ csl: ecology.csl
 ---
 
 ```{r}
-#| include: false
+# source(here::here(".Rprofile"))
 library(targets)
 library(tarchetypes)
 library(sf)

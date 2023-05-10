@@ -244,7 +244,7 @@ tar_plan(
   
   # Report ------------------------------------------------------------------
   
-  # Welsch has an old version of Quarto and this doesn't work
-  # tar_quarto(report, "docs/report.Qmd"),
+  # Welsch has an old version of Quarto that doesn't work
+  tar_render(report, "docs/report.Rmd"),
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
