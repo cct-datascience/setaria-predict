@@ -25,7 +25,8 @@ tar_option_set(
     "stars",
     "units",
     "ragg",
-    "colorspace"
+    "colorspace",
+    "quarto"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -217,11 +218,11 @@ tar_plan(
   # Create genotype and ecosystem combinations and wrangle data
   tar_target(
     newdata,
-      expand_grid(
-        genotype = c("antho", "dwarf", "hotleaf", "wildtype"),
-        ecosystem = c("mixed", "pine", "prairie"),
-        grid_bioclim
-      )
+    expand_grid(
+      genotype = c("antho", "dwarf", "hotleaf", "wildtype"),
+      ecosystem = c("mixed", "pine", "prairie"),
+      grid_bioclim
+    )
   ),
   # Predict on those points and wrangle
   tar_target(
@@ -237,12 +238,12 @@ tar_plan(
     make_pred_map(grid_pred, seus)
   ),
   tar_target(
-   pred_map_log,
-   make_pred_map_log(grid_pred, seus)
-  ),
-  tar_target(
     pred_map_diff,
     make_pred_map_diff(grid_pred, seus)
-  )
+  ),
+  
+  # Report ------------------------------------------------------------------
+  
+  tar_quarto(report, "docs/report.Qmd"),  
 ) |> 
   tarchetypes::tar_hook_before(tidymodels_prefer())
