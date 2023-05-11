@@ -16,6 +16,7 @@ library(tidyverse)
 library(tidymodels)
 library(patchwork)
 library(ragg)
+library(ggtext)
 tar_load(c(
   rf_recipe,
   data_split,
@@ -75,12 +76,16 @@ ggplot() +
 The resulting predicted values look are plotted below for each ecosystem and genotype
 
 ```{r}
+#| label: pred-npp-map
+#| fig.cap: Predicted summer NPP for four phenotypes of *Setaria* in three simulated ecosystems. NPP values were predicted using a random forest model trained on ED2 simulations at 29 sites and 3 ecosystems per site.  NPP values are predicted on a 0.5º grid and displayed on a log scale.
 tar_read(pred_map)
 ```
 
 We can also visualize these as deviations from wildtype
 
 ```{r}
+#| label: pred_npp_dif
+#| fig.cap: Percent difference in summer NPP compared to wildtype *Setaria* predicted in the South East US.
 tar_read(pred_map_diff)
 ```
 

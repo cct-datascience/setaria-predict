@@ -36,7 +36,7 @@ make_pred_map <- function(grid_pred, seus) {
     scale_x_continuous(breaks = c(-75, -80, -85, -90)) +
     guides(
       fill = guide_colorbar(
-        title = "Summer NPP in year 10 [kg m<sup>-2</sup> s<sup>-1</sup>]",
+        title = "Summer NPP [kg m<sup>-2</sup> s<sup>-1</sup>]",
         title.position = "top",
         barwidth = unit(10, "cm"),
       )) +
