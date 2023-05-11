@@ -36,13 +36,14 @@ make_pred_map <- function(grid_pred, seus) {
     scale_x_continuous(breaks = c(-75, -80, -85, -90)) +
     guides(
       fill = guide_colorbar(
-        title = "Summer NPP in year 10 [kg/m^2/s]",
+        title = "Summer NPP in year 10 [kg m<sup>-2</sup> s<sup>-1</sup>]",
         title.position = "top",
         barwidth = unit(10, "cm"),
       )) +
     theme_bw() +
     theme(
       legend.position = "bottom",
+      legend.title = ggtext::element_markdown(),
       legend.justification = "center",
       axis.title = element_blank(),
       panel.grid.major = element_line(color = "grey50", linetype = "dashed", linewidth = 0.2),

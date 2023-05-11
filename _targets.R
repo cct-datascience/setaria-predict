@@ -26,7 +26,7 @@ tar_option_set(
     "units",
     "ragg",
     "colorspace",
-    "quarto"
+    "ggtext"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -240,6 +240,18 @@ tar_plan(
   tar_target(
     pred_map_diff,
     make_pred_map_diff(grid_pred, seus)
+  ),
+  
+  
+  # Save figures out --------------------------------------------------------
+  
+  tar_file(
+    pred_map_png,
+    ggsave("figures/npp_map.png", pred_map)
+  ),
+  tar_file(
+    pred_map_diff_png,
+    ggsave("figures/diff_map.png", pred_map_diff)
   ),
   
   # Report ------------------------------------------------------------------
