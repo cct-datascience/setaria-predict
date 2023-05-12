@@ -53,10 +53,10 @@ tar_plan(
     antho_files,
     get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "antho")
   ),
-  tar_target(wildtype_data, collect_data(wildtype_files) |> mutate(genotype = "wildtype")),
-  tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(genotype = "hotleaf")),
-  tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(genotype = "dwarf")),
-  tar_target(antho_data, collect_data(antho_files) |> mutate(genotype = "antho")),
+  tar_target(wildtype_data, collect_data(wildtype_files) |> mutate(phenotype = "wildtype")),
+  tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(phenotype = "hotleaf")),
+  tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(phenotype = "dwarf")),
+  tar_target(antho_data, collect_data(antho_files) |> mutate(phenotype = "antho")),
   tar_target(setaria_data, bind_rows(wildtype_data, hotleaf_data, dwarf_data, antho_data)),
   
   # Get weather data
@@ -164,7 +164,7 @@ tar_plan(
   tar_target(
     rf_pred_plot,
     augment(rf_fit, data_test) |> 
-      ggplot(aes(x = log_npp_yr10, y = .pred, color = genotype)) +
+      ggplot(aes(x = log_npp_yr10, y = .pred, color = phenotype)) +
       geom_point() + 
       geom_abline(alpha = 0.3, linetype = 2) +
       facet_wrap(~ecosystem, labeller = label_both) +
@@ -182,7 +182,7 @@ tar_plan(
   tar_target(
     lm_pred_plot,
     augment(lm_fit, data_test) |> 
-      ggplot(aes(x = log_npp_yr10, y = .pred, color = genotype)) +
+      ggplot(aes(x = log_npp_yr10, y = .pred, color = phenotype)) +
       geom_point() + 
       geom_abline(alpha = 0.3, linetype = 2) +
       facet_wrap(~ecosystem, labeller = label_both) +
@@ -218,11 +218,11 @@ tar_plan(
     grid_bioclim,
     calc_bioclim(grid_daymet)
   ),
-  # Create genotype and ecosystem combinations and wrangle data
+  # Create phenotype and ecosystem combinations and wrangle data
   tar_target(
     newdata,
     expand_grid(
-      genotype = c("antho", "dwarf", "hotleaf", "wildtype"),
+      phenotype = c("antho", "dwarf", "hotleaf", "wildtype"),
       ecosystem = c("mixed", "pine", "prairie"),
       grid_bioclim
     )

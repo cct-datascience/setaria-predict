@@ -4,7 +4,7 @@ define_recipe <- function(data_train) {
     update_role(log_npp_yr10, new_role = "outcome") |> 
     update_role(site, new_role = "id") |> 
     step_normalize(all_numeric_predictors()) |> 
-    step_interact(~genotype:ecosystem) |> 
+    step_interact(~phenotype:ecosystem) |> 
     step_dummy(all_nominal_predictors()) |> 
     # step_log(all_outcomes(), id = "log_resp", skip = true) |> #log transform response to improve normality of residuals.
     step_zv(all_predictors()) |> #remove predictors with zero variance

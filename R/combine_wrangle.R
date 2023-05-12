@@ -1,6 +1,6 @@
-combine_wrangle <- function(genotype_data, daymet_monthly) {
+combine_wrangle <- function(phenotype_data, daymet_monthly) {
   left_join(
-    genotype_data |>
+    phenotype_data |>
       # Keep just data for setaria (pft 1)
       filter(pft == 1),
     daymet_monthly,
