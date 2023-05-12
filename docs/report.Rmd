@@ -29,14 +29,14 @@ tar_load(c(
 
 ## Methods Overview
 
-The goal was to generate predictive spatial models for four simulated genotypes of\
+The goal was to generate predictive spatial models for four simulated phenotypes of\
 *Setaria*: wildtype, high anthocyanin content, dwarf, and increased leaf temperature.
 We used PEcAn to generate ED2 runs at 29 southeast US sites in 3 ecosystems at each site: mixed forest, pine forest, and prairie.
-We utilized PEcAn's sensitivity analysis to simulate the 4 genotypes.
-The median run was used as wildtype, -1 SD for quantum efficiency represented high anthocyanin content, -1 SD for stomatal slope represented the increased leaf temperature genotype, and +1 SD for fine root to leaf ratio represented the dwarf genotype.
+We utilized PEcAn's sensitivity analysis to simulate the 4 phenotypes.
+The median run was used as wildtype, -1 SD for quantum efficiency represented high anthocyanin content, -1 SD for stomatal slope represented the increased leaf temperature phenotype, and +1 SD for fine root to leaf ratio represented the dwarf phenotype.
 We used only the final year of the 10 year simulations as data, averaging the NPP over the summer months (June, July, and August) as a response variable.
 We downloaded weather data for each site from Daymet using the `daymetr` package [@daymetr] and calculated 19 bioclimatic variables using the `dismo` package [@dismo].
-The resulting dataset contained mean summer NPP, the site ID, the 19 bioclimatic variables, mean solar radiation, and mean vapor pressure deficit, ecosystem, and genotype.
+The resulting dataset contained mean summer NPP, the site ID, the 19 bioclimatic variables, mean solar radiation, and mean vapor pressure deficit, ecosystem, and phenotype.
 Data preparation, model training, model validation, and prediction were facilitated by the packages in the `tidymodels` ecosystem [@tidymodels].
 The dataset was split 80/20 into a training and test set using the `rsample` package [@rsample] and prepared for modeling using the `recipes` package [@recipes] (steps detailed below).
 We compared two candidate models, a random forest model (using the `ranger` engine), and a LASSO regression (using the `glmnet` engine) [@glmnet; @ranger; @tay2023].
@@ -51,7 +51,7 @@ A grid of points every 0.5º was generated within the bounds of the Southeastern
 rf_recipe
 ```
 
-All numeric predictors (the 19 bioclim variables, mean daylight, and mean vapor pressure deficit) are centered and scaled, dummy variables are created for genotype, ecosystem, and their interaction, and PCA is performed on the bioclim variables to retain a number of components that explains 85% of variance.
+All numeric predictors (the 19 bioclim variables, mean daylight, and mean vapor pressure deficit) are centered and scaled, dummy variables are created for phenotype, ecosystem, and their interaction, and PCA is performed on the bioclim variables to retain a number of components that explains 85% of variance.
 
 ## Model Validation
 
@@ -84,7 +84,7 @@ ggplot() +
   geom_point(data = grid_data, aes(x = lon, y = lat))
 ```
 
-The resulting predicted values look are plotted below for each ecosystem and genotype
+The resulting predicted values look are plotted below for each ecosystem and phenotype
 
 ```{r}
 #| label: pred-npp-map
