@@ -4,6 +4,6 @@ collect_data <- function(files) {
     group_by(site, ecosystem) |>
     mutate(start = min(date), end = max(date)) |> 
     ungroup() |> 
-    filter(pft == 1) |> #keep only Setaria
+    # filter(pft == 1) |> #keep only Setaria
     rename(sa_run = ensemble)
 }

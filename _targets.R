@@ -63,7 +63,10 @@ tar_plan(
   tar_target(site_data, make_site_data(setaria_data)),
   tar_target(daymet_monthly, get_daymet_monthly(site_data)),
   tar_target(bioclim, calc_bioclim(daymet_monthly)),
-  tar_target(model_data, create_model_data(setaria_data, bioclim)), #TODO: consider including mean daylight or latitude 
+  tar_target(
+    model_data,
+    create_model_data(setaria_data |> filter(pft == 1), bioclim)
+  ),
   
   #split into training and testing set
   tar_target(
@@ -242,6 +245,16 @@ tar_plan(
     make_pred_map_diff(grid_pred, seus)
   ),
   
+  # Proportion AGB timeseries -----------------------------------------------
+  
+  tar_target(
+    prop_quantiles,
+    calc_prop_agb(setaria_data)
+  ),
+  tar_target(
+    prop_agb_plot,
+    plot_prop_agb(prop_quantiles)
+  ),
   
   # Save figures out --------------------------------------------------------
   
