@@ -266,6 +266,10 @@ tar_plan(
     pred_map_diff_png,
     ggsave("figures/diff_map.png", pred_map_diff)
   ),
+  tar_file(
+    prop_agb_plot_png,
+    ggsave("figures/prop_agb.png", prop_agb_plot, width = 7, height = 5)
+  ),
   
   # Report ------------------------------------------------------------------
   
