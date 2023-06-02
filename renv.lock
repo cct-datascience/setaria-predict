@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.3",
+    "Version": "4.2.2",
     "Repositories": [
       {
         "Name": "RSPM",
@@ -13,6 +13,13 @@
     ]
   },
   "Packages": {
+    "BH": {
+      "Package": "BH",
+      "Version": "1.81.0-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "68122010f01c4dcfbe58ce7112f2433d"
+    },
     "DBI": {
       "Package": "DBI",
       "Version": "1.1.3",
@@ -142,6 +149,19 @@
       ],
       "Hash": "0cf10dab0d023d5b46a5a14387556891"
     },
+    "V8": {
+      "Package": "V8",
+      "Version": "4.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "curl",
+        "jsonlite",
+        "utils"
+      ],
+      "Hash": "d1fa8fae6a47e88bb46d5152312bd8bd"
+    },
     "abind": {
       "Package": "abind",
       "Version": "1.4-5",
@@ -154,6 +174,40 @@
       ],
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862"
     },
+    "anytime": {
+      "Package": "anytime",
+      "Version": "0.3.9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "BH",
+        "R",
+        "Rcpp"
+      ],
+      "Hash": "74a64813f17b492da9c6afda6b128e3d"
+    },
+    "arrow": {
+      "Package": "arrow",
+      "Version": "12.0.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "R6",
+        "assertthat",
+        "bit64",
+        "cpp11",
+        "glue",
+        "methods",
+        "purrr",
+        "rlang",
+        "stats",
+        "tidyselect",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "991f97485cc1db28ff463683ed195ada"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.1",
@@ -163,6 +217,16 @@
         "sys"
       ],
       "Hash": "e8a22846fff485f0be3770c2da758713"
+    },
+    "assertthat": {
+      "Package": "assertthat",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "tools"
+      ],
+      "Hash": "50c838a310445e954bc13f26f26a6ecf"
     },
     "backports": {
       "Package": "backports",
@@ -194,6 +258,16 @@
       ],
       "Hash": "0c54cf3a08cc0e550fbd64ad33166143"
     },
+    "bigD": {
+      "Package": "bigD",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "93637e906f3fe962413912c956eb44db"
+    },
     "bit": {
       "Package": "bit",
       "Version": "4.0.5",
@@ -217,6 +291,13 @@
         "utils"
       ],
       "Hash": "9fe98599ca456d6552421db0d6772d8f"
+    },
+    "bitops": {
+      "Package": "bitops",
+      "Version": "1.0-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "b7d8d8ee39869c18d8846a184dd8a1af"
     },
     "blob": {
       "Package": "blob",
@@ -269,6 +350,24 @@
         "tidyr"
       ],
       "Hash": "f62b2504021369a2449c54bbda362d30"
+    },
+    "bs4Dash": {
+      "Package": "bs4Dash",
+      "Version": "2.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "bslib",
+        "fresh",
+        "htmltools",
+        "httpuv",
+        "httr",
+        "jsonlite",
+        "lifecycle",
+        "shiny",
+        "waiter"
+      ],
+      "Hash": "5bdfebde67149093342161c6e748ca0d"
     },
     "bslib": {
       "Package": "bslib",
@@ -390,6 +489,23 @@
       ],
       "Hash": "db6b0e88fa092982ecf56322b47be0fe"
     },
+    "clustermq": {
+      "Package": "clustermq",
+      "Version": "0.8.95.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "R6",
+        "Rcpp",
+        "methods",
+        "narray",
+        "progress",
+        "purrr",
+        "utils"
+      ],
+      "Hash": "b2a10ed0f27e60aeaaf566c15ada5879"
+    },
     "codetools": {
       "Package": "codetools",
       "Version": "0.2-19",
@@ -452,6 +568,27 @@
         "utils"
       ],
       "Hash": "e8a1e41acf02548751f45c718d55aa6a"
+    },
+    "crew": {
+      "Package": "crew",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "R6",
+        "getip",
+        "mirai",
+        "nanonext",
+        "processx",
+        "ps",
+        "rlang",
+        "stats",
+        "tibble",
+        "tidyselect",
+        "utils"
+      ],
+      "Hash": "50a166a0063e9e74231f4473ec8dcab3"
     },
     "curl": {
       "Package": "curl",
@@ -759,6 +896,19 @@
       ],
       "Hash": "618609b42c9406731ead03adf5379850"
     },
+    "fresh": {
+      "Package": "fresh",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "htmltools",
+        "rstudioapi",
+        "sass",
+        "shiny"
+      ],
+      "Hash": "fa54367040deb4537da49b7ac0ee5770"
+    },
     "fs": {
       "Package": "fs",
       "Version": "1.6.2",
@@ -859,6 +1009,16 @@
         "methods"
       ],
       "Hash": "15e9634c0fcd294799e9b2e929ed1b86"
+    },
+    "getip": {
+      "Package": "getip",
+      "Version": "0.1-3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "ceb49d19444b9b3acfce8ee34e23e2f5"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -1019,6 +1179,36 @@
         "xml2"
       ],
       "Hash": "05e4f5fffb1eecfeaac9ea0b7f255fef"
+    },
+    "gt": {
+      "Package": "gt",
+      "Version": "0.9.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "base64enc",
+        "bigD",
+        "bitops",
+        "cli",
+        "commonmark",
+        "dplyr",
+        "fs",
+        "glue",
+        "htmltools",
+        "htmlwidgets",
+        "juicyjuice",
+        "magrittr",
+        "markdown",
+        "reactable",
+        "rlang",
+        "sass",
+        "scales",
+        "tibble",
+        "tidyselect",
+        "xml2"
+      ],
+      "Hash": "d55233a737e43e44987724e57dfec302"
     },
     "gtable": {
       "Package": "gtable",
@@ -1302,6 +1492,16 @@
       ],
       "Hash": "a4269a09a9b865579b2635c77e572374"
     },
+    "juicyjuice": {
+      "Package": "juicyjuice",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "V8"
+      ],
+      "Hash": "3bcd11943da509341838da9399e18bce"
+    },
     "knitr": {
       "Package": "knitr",
       "Version": "1.42",
@@ -1544,6 +1744,20 @@
       ],
       "Hash": "587ce77fd3c7bada7eadb2d18b62930d"
     },
+    "mirai": {
+      "Package": "mirai",
+      "Version": "0.8.7.9022",
+      "Source": "Repository",
+      "Repository": "https://shikokuchuo.r-universe.dev",
+      "RemoteUrl": "https://github.com/shikokuchuo/mirai",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "7e086e261c2a56f8316ce9bf89080a4f36534084",
+      "Requirements": [
+        "R",
+        "nanonext"
+      ],
+      "Hash": "1c71d7e29484d20d894c9df2cd2f3c49"
+    },
     "modeldata": {
       "Package": "modeldata",
       "Version": "1.1.0",
@@ -1617,6 +1831,34 @@
         "methods"
       ],
       "Hash": "6dfe8bf774944bd5595785e3229d8771"
+    },
+    "nanonext": {
+      "Package": "nanonext",
+      "Version": "0.9.0.9002",
+      "Source": "Repository",
+      "Repository": "https://shikokuchuo.r-universe.dev",
+      "RemoteUrl": "https://github.com/shikokuchuo/nanonext",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "34fcb75fbad9e33965e93dfa2d2e3866081d1c60",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "3b03a376c9e9fe576d38f6263792273d"
+    },
+    "narray": {
+      "Package": "narray",
+      "Version": "0.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "progress",
+        "stats",
+        "stringr",
+        "utils"
+      ],
+      "Hash": "7ec5a2396d3c9ad4374495283dfcdc83"
     },
     "ncdf4": {
       "Package": "ncdf4",
@@ -1754,6 +1996,17 @@
         "vctrs"
       ],
       "Hash": "15da5a8412f317beeee6175fbc76f4bb"
+    },
+    "pingr": {
+      "Package": "pingr",
+      "Version": "2.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "processx",
+        "utils"
+      ],
+      "Hash": "b762f8f7d305f7eb0bab96eb1a3c782a"
     },
     "pkgconfig": {
       "Package": "pkgconfig",
@@ -1966,6 +2219,31 @@
         "terra"
       ],
       "Hash": "ebebd9f0f203a129eb2da96470191b82"
+    },
+    "reactR": {
+      "Package": "reactR",
+      "Version": "0.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "htmltools"
+      ],
+      "Hash": "75389c8091eb14ee21c6bc87a88b3809"
+    },
+    "reactable": {
+      "Package": "reactable",
+      "Version": "0.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "digest",
+        "htmltools",
+        "htmlwidgets",
+        "jsonlite",
+        "reactR"
+      ],
+      "Hash": "6069eb2a6597963eae0605c1875ff14c"
     },
     "readr": {
       "Package": "readr",
@@ -2322,6 +2600,37 @@
       ],
       "Hash": "c2eae3d8c670fa9dfa35a12066f4a1d5"
     },
+    "shinyWidgets": {
+      "Package": "shinyWidgets",
+      "Version": "0.7.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "anytime",
+        "bslib",
+        "grDevices",
+        "htmltools",
+        "jsonlite",
+        "rlang",
+        "sass",
+        "shiny"
+      ],
+      "Hash": "fd889b32caa37b8ed9b1e9e7ef1564bc"
+    },
+    "shinybusy": {
+      "Package": "shinybusy",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "htmltools",
+        "htmlwidgets",
+        "jsonlite",
+        "shiny"
+      ],
+      "Hash": "cf0b9330f677599316a4b36682081e8b"
+    },
     "slider": {
       "Package": "slider",
       "Version": "0.3.0",
@@ -2482,7 +2791,7 @@
     },
     "targets": {
       "Package": "targets",
-      "Version": "1.0.0",
+      "Version": "1.1.3",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -2503,10 +2812,9 @@
         "tools",
         "utils",
         "vctrs",
-        "withr",
         "yaml"
       ],
-      "Hash": "3f299989005cd3ccd101eb97623fd533"
+      "Hash": "547b1105f6a5d9ee56761562ceb63c7d"
     },
     "terra": {
       "Package": "terra",
@@ -2867,6 +3175,18 @@
         "withr"
       ],
       "Hash": "8318e64ffb3a70e652494017ec455561"
+    },
+    "waiter": {
+      "Package": "waiter",
+      "Version": "0.2.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R6",
+        "htmltools",
+        "shiny"
+      ],
+      "Hash": "93e6b6c8ae3f81d4be77a0dc74e5cf5e"
     },
     "waldo": {
       "Package": "waldo",

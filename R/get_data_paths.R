@@ -1,3 +1,10 @@
+#' Retrieve paths of csv files contianing results on Welsch
+#' 
+#' This is no longer used since the data has been combined in data/all_runs.arrow
+#'
+#' @param paths 
+#' @param phenotype 
+#' 
 get_data_paths <- function(paths, phenotype = c("wildtype", "antho", "dwarf", "hotleaf")) {
   phenotype <- match.arg(phenotype)
   
