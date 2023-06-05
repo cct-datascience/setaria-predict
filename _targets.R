@@ -41,8 +41,12 @@ tar_source()
 
 tar_plan(
   # Data prep ---------------------------------------------------------------
-  tar_target(setaria_file, "data/all_runs.arrow", format = "file"),
-  tar_target(setaria_raw, arrow::read_feather(setaria_file)),
+  # tar_target(setaria_file, "data/all_runs.arrow", format = "file"),
+  # tar_target(setaria_raw, arrow::read_feather(setaria_file)),
+  tar_target(setaria_raw, {
+    board <- pins::board_connect()
+    pin_read(board, "ericrscott/setaria_runs")
+  }, packages = c("pins", "rsconnect")),
   tar_target(setaria_data, make_phenotype_data(setaria_raw)),
   
   # Get weather data
@@ -262,4 +266,4 @@ tar_plan(
   # Welsch has an old version of Quarto that doesn't work
   tar_render(report, "docs/report.Rmd"),
 ) |> 
-  tarchetypes::tar_hook_before(tidymodels_prefer())
+  tarchetypes::tar_hook_before(tidymodels::tidymodels_prefer())
