@@ -6,6 +6,10 @@
 # Load packages required to define the pipeline:
 library(targets)
 library(tarchetypes)
+library(crew)
+tar_option_set(
+  controller = crew_controller_local(workers = 3)
+)
 set.seed(34234)
 # Set target options:
 tar_option_set(
@@ -37,27 +41,23 @@ tar_source()
 
 tar_plan(
   # Data prep ---------------------------------------------------------------
-  tar_files(
-    wildtype_files,
-    get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "wildtype")
-  ),
-  tar_files(
-    hotleaf_files,
-    get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "hotleaf")
-  ),
-  tar_files(
-    dwarf_files,
-    get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "dwarf")
-  ),
-  tar_files(
-    antho_files,
-    get_data_paths(c("/data/output/pecan_runs/transect/", "/data/output/pecan_runs/seus_sample"), "antho")
-  ),
-  tar_target(wildtype_data, collect_data(wildtype_files) |> mutate(phenotype = "wildtype")),
-  tar_target(hotleaf_data, collect_data(hotleaf_files) |> mutate(phenotype = "hotleaf")),
-  tar_target(dwarf_data, collect_data(dwarf_files) |> mutate(phenotype = "dwarf")),
-  tar_target(antho_data, collect_data(antho_files) |> mutate(phenotype = "antho")),
-  tar_target(setaria_data, bind_rows(wildtype_data, hotleaf_data, dwarf_data, antho_data)),
+  # tar_target(setaria_file, "data/all_runs.arrow", format = "file"),
+  # tar_target(setaria_raw, arrow::read_feather(setaria_file)),
+  tar_target(
+    setaria_raw_hash,
+    pin_meta(pins::board_connect(), "ericrscott/setaria_runs")$pin_hash,
+    cue = tar_cue("always"), #always check hash for updates
+    packages = c("pins", "rsconnect")
+  ), 
+  tar_target(
+    setaria_raw,
+    {
+      setaria_raw_hash #force dependency on pin hash
+      pin_read(pins::board_connect(), "ericrscott/setaria_runs")
+    },
+    packages = c("pins", "rsconnect")
+  ), 
+  tar_target(setaria_data, make_phenotype_data(setaria_raw)),
   
   # Get weather data
   tar_target(site_data, make_site_data(setaria_data)),
@@ -275,5 +275,6 @@ tar_plan(
   
   # Welsch has an old version of Quarto that doesn't work
   tar_render(report, "docs/report.Rmd"),
+  tar_render(readme, "README.Rmd"),
 ) |> 
-  tarchetypes::tar_hook_before(tidymodels_prefer())
+  tarchetypes::tar_hook_before(tidymodels::tidymodels_prefer())

@@ -33,7 +33,7 @@ plot_prop_agb <- function(prop_quantiles) {
     geom_line(aes(y = `50%`), linewidth = 0.25) +
     scale_y_continuous(labels = scales::label_percent()) +
     scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
-    labs(x = "Simulation date", y = "Percent aboveground biomass") +
+    labs(x = "Simulation date", y = "% AGB") +
     theme_bw() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1)
