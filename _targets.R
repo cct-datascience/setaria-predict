@@ -238,7 +238,10 @@ tar_plan(
     prop_agb_plot,
     plot_prop_agb(setaria_data)
   ),
-  
+  tar_target(
+    dens_plot,
+    plot_dens(setaria_data)
+  ),
   # Save figures out --------------------------------------------------------
   
   tar_file(
@@ -252,6 +255,10 @@ tar_plan(
   tar_file(
     prop_agb_plot_png,
     ggsave("figures/prop_agb.png", prop_agb_plot, width = 7, height = 5)
+  ),
+  tar_file(
+    dens_plot_png,
+    ggsave("figures/dens.png", dens_plot, width = 7, height = 5)
   ),
   
   # Report ------------------------------------------------------------------
