@@ -25,7 +25,7 @@ make_pred_map <- function(grid_pred, seus) {
     geom_stars(data = pred_sf, mapping = aes(fill = NPP), na.action = na.omit) +
     geom_sf(data = seus, fill = NA) +
     geom_sf_label() +
-    facet_grid(phenotype ~ ecosystem, labeller = as_labeller(str_to_sentence)) +
+    facet_grid(ecosystem ~ phenotype, labeller = as_labeller(str_to_sentence)) +
     coord_sf(xlim = st_bbox(seus)[c(1,3)], ylim = st_bbox(seus)[c(2, 4)]) +
     scale_fill_viridis_c(
       trans = scales::log_trans(),
@@ -81,7 +81,7 @@ make_pred_map_diff <- function(grid_pred, seus) {
       na.action = na.omit
     ) +
     geom_sf(data = seus, fill = NA) +
-    facet_grid(phenotype ~ ecosystem, labeller = as_labeller(str_to_sentence)) +
+    facet_grid(ecosystem ~ phenotype, labeller = as_labeller(str_to_sentence)) +
     coord_sf(xlim = st_bbox(seus)[c(1,3)], ylim = st_bbox(seus)[c(2, 4)]) +
     colorspace::scale_fill_continuous_diverging(
       palette = "Blue-Red",
