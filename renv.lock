@@ -7,6 +7,10 @@
         "URL": "https://packagemanager.rstudio.com/all/latest"
       },
       {
+        "Name": "CRAN",
+        "URL": "https://cloud.r-project.org"
+      },
+      {
         "Name": "pecanproject",
         "URL": "https://pecanproject.r-universe.dev"
       }
