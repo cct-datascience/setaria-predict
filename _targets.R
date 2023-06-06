@@ -235,12 +235,8 @@ tar_plan(
   # Proportion AGB timeseries -----------------------------------------------
   
   tar_target(
-    prop_quantiles,
-    calc_prop_agb(setaria_data)
-  ),
-  tar_target(
     prop_agb_plot,
-    plot_prop_agb(prop_quantiles)
+    plot_prop_agb(setaria_data)
   ),
   
   # Save figures out --------------------------------------------------------
