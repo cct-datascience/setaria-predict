@@ -30,7 +30,8 @@ tar_option_set(
     "units",
     "ragg",
     "colorspace",
-    "ggtext"
+    "ggtext",
+    "arrow"
   ),
   format = "rds" # default storage format
   # Set other options as needed.
@@ -41,22 +42,8 @@ tar_source()
 
 tar_plan(
   # Data prep ---------------------------------------------------------------
-  # tar_target(setaria_file, "data/all_runs.arrow", format = "file"),
-  # tar_target(setaria_raw, arrow::read_feather(setaria_file)),
-  tar_target(
-    setaria_raw_hash,
-    pin_meta(pins::board_connect(), "ericrscott/setaria_runs")$pin_hash,
-    cue = tar_cue("always"), #always check hash for updates
-    packages = c("pins", "rsconnect")
-  ), 
-  tar_target(
-    setaria_raw,
-    {
-      setaria_raw_hash #force dependency on pin hash
-      pin_read(pins::board_connect(), "ericrscott/setaria_runs")
-    },
-    packages = c("pins", "rsconnect")
-  ), 
+  tar_target(setaria_file, "data/all_runs.parquet", format = "file"),
+  tar_target(setaria_raw, arrow::read_parquet(setaria_file)),
   tar_target(setaria_data, make_phenotype_data(setaria_raw)),
   
   # Get weather data
