@@ -20,7 +20,7 @@ make_phenotype_data <- function(setaria_raw) {
       str_detect(ensemble, "SA-SetariaWT2-fineroot2leaf-0.841$") ~ "dwarf",
       str_detect(ensemble, "SA-SetariaWT2-stomatal_slope-0.159$") ~ "hotleaf"
     )) |> 
-    filter(!is.na(phenotype)) |> 
+    filter(!is.na(phenotype)) |> #removes ensemble runs and unused sensitivity analysis runs
     dplyr::select(-ensemble) |> 
     group_by(site, ecosystem, phenotype) |>
     mutate(start = min(date), end = max(date)) |> 

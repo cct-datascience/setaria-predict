@@ -222,7 +222,11 @@ tar_plan(
       grid_data |> dplyr::select(-start, -end)
     )
   ),
-  # Make map
+  # Make maps
+  tar_target(
+    site_plot,
+    plot_sites(site_data, seus)
+  ),
   tar_target(
     pred_map,
     make_pred_map(grid_pred, seus)
@@ -243,7 +247,10 @@ tar_plan(
     plot_dens(setaria_data)
   ),
   # Save figures out --------------------------------------------------------
-  
+  tar_file(
+    site_plot_png,
+    ggsave("figures/sites.png", site_plot)
+  ),
   tar_file(
     pred_map_png,
     ggsave("figures/npp_map.png", pred_map)
