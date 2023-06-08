@@ -19,11 +19,13 @@ plot_sa_summary <- function(sa_output) {
         x = elasticities_mean,
         xmin = elasticities_mean - elasticities_SE,
         xmax = elasticities_mean + elasticities_SE
-      )
+      ),
+      size = 0.25
     ) +
     geom_vline(xintercept = 0, alpha = .5, linetype = 3) +
     facet_grid(~ecosystem, scales = "free", labeller = as_labeller(str_to_sentence)) +
-    labs(caption = "Means ± SE for 9 sites", x = "Elasticity", y="")
+    labs(caption = "Means ± SE for 9 sites", x = "Elasticity", y="") +
+    theme_bw()
   
 }
 

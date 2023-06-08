@@ -277,7 +277,7 @@ tar_plan(
   ),
   tar_file(
     sa_summary_png,
-    ggsave("figures/sa_plot.png", sa_summary_plot)
+    ggsave("figures/sa_plot.png", sa_summary_plot, width = 6, height = 5)
   ),
   # Report ------------------------------------------------------------------
   
