@@ -222,7 +222,11 @@ tar_plan(
       grid_data |> dplyr::select(-start, -end)
     )
   ),
-  # Make map
+  # Make maps
+  tar_target(
+    site_plot,
+    plot_sites(site_data, seus)
+  ),
   tar_target(
     pred_map,
     make_pred_map(grid_pred, seus)
@@ -235,12 +239,12 @@ tar_plan(
   # Proportion AGB timeseries -----------------------------------------------
   
   tar_target(
-    prop_quantiles,
-    calc_prop_agb(setaria_data)
+    prop_agb_plot,
+    plot_prop_agb(setaria_data)
   ),
   tar_target(
-    prop_agb_plot,
-    plot_prop_agb(prop_quantiles)
+    dens_plot,
+    plot_dens(setaria_data)
   ),
   
   # Sensitivity Analysis Data -----------------------------------------------
@@ -264,6 +268,10 @@ tar_plan(
   
   # Save figures out --------------------------------------------------------
   tar_file(
+    site_plot_png,
+    ggsave("figures/sites.png", site_plot)
+  ),  
+  tar_file(
     pred_map_png,
     ggsave("figures/npp_map.png", pred_map)
   ),
@@ -274,6 +282,10 @@ tar_plan(
   tar_file(
     prop_agb_plot_png,
     ggsave("figures/prop_agb.png", prop_agb_plot, width = 7, height = 5)
+  ),
+  tar_file(
+    dens_plot_png,
+    ggsave("figures/dens.png", dens_plot, width = 7, height = 5)
   ),
   tar_file(
     sa_summary_png,
