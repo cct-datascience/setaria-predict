@@ -27,7 +27,7 @@ This project uses [`renv`](https://rstudio.github.io/renv/articles/renv.html) fo
 
 This project uses the [`targets` package](https://docs.ropensci.org/targets/) for workflow management. Run `targets::tar_make()` from the console to run the workflow and reproduce all results.
 
-The data for this project is on the Welsch server, so you probably won't be able to reproduce this workflow outside of that environment. 
+Data for this project was originally on a server (named Welsch) in many CSV files (one per simulation).  These are not committed in this repository, but the combined data is committed to `data/` and the script used to wrangle them is in `data_welsch/`.
 
 **Targets workflow:**
 
