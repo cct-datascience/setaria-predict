@@ -243,8 +243,26 @@ tar_plan(
     plot_prop_agb(prop_quantiles)
   ),
   
-  # Save figures out --------------------------------------------------------
+  # Sensitivity Analysis Data -----------------------------------------------
   
+  # Re-create sensitivity analysis plot using data rescued from Welsch.
+  # Unrelated to predictive modeling, just including here because we don't have
+  # easy access to Welsch data anymore
+  
+  tar_file(
+    sa_output_file,
+    "data/sa_output.csv"
+  ),
+  tar_target(
+    sa_output,
+    read_csv(sa_output_file)
+  ),
+  tar_target(
+    sa_summary_plot,
+    plot_sa_summary(sa_output)
+  ),
+  
+  # Save figures out --------------------------------------------------------
   tar_file(
     pred_map_png,
     ggsave("figures/npp_map.png", pred_map)
@@ -257,7 +275,10 @@ tar_plan(
     prop_agb_plot_png,
     ggsave("figures/prop_agb.png", prop_agb_plot, width = 7, height = 5)
   ),
-  
+  tar_file(
+    sa_summary_png,
+    ggsave("figures/sa_plot.png", sa_summary_plot, width = 6, height = 5)
+  ),
   # Report ------------------------------------------------------------------
   
   # Welsch has an old version of Quarto that doesn't work
